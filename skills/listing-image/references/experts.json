@@ -1,0 +1,404 @@
+{
+  "operations": [
+    {
+      "id": "process-images",
+      "endpoint": "/api/process-images",
+      "description": "为一张或多张商品图生成白底图；图片数量受服务端上传配置限制。",
+      "fields": [
+        {
+          "name": "images",
+          "type": "file[]",
+          "required": true,
+          "description": "要处理的商品图片。"
+        }
+      ]
+    },
+    {
+      "id": "generate-scene-text",
+      "endpoint": "/api/generate-scene",
+      "fixedFields": {
+        "mode": "text"
+      },
+      "description": "根据文字方向与商品图生成场景图。",
+      "fields": [
+        {
+          "name": "productImage",
+          "type": "file",
+          "required": true,
+          "description": "要放入生成场景的商品原图。"
+        },
+        {
+          "name": "visualExpertMode",
+          "type": "string",
+          "required": false,
+          "default": "none",
+          "description": "选择提示词专家模式；未知值按通用模式处理。"
+        },
+        {
+          "name": "promptText",
+          "type": "string",
+          "required": false,
+          "description": "生成方向；部分模式会在缺省时采用内置文字。"
+        }
+      ]
+    },
+    {
+      "id": "generate-scene-image",
+      "endpoint": "/api/generate-scene",
+      "fixedFields": {
+        "mode": "image"
+      },
+      "description": "参考商品图和场景图生成场景图。",
+      "fields": [
+        {
+          "name": "productImage",
+          "type": "file",
+          "required": true,
+          "description": "要放入场景的商品原图。"
+        },
+        {
+          "name": "sceneImage",
+          "type": "file",
+          "required": true,
+          "description": "用作场景参考的图片。"
+        },
+        {
+          "name": "promptText",
+          "type": "string",
+          "required": false,
+          "default": "Place the product naturally in the scene",
+          "description": "描述如何结合商品图与场景图；留空时使用通用场景指令。"
+        }
+      ]
+    },
+    {
+      "id": "edit-image",
+      "endpoint": "/api/edit-image",
+      "description": "按提示词编辑标注图，可选提供未标注原图作为对照。",
+      "fields": [
+        {
+          "name": "annotatedImage",
+          "type": "file",
+          "required": true,
+          "description": "带有彩色编辑标记的图片。"
+        },
+        {
+          "name": "originalImage",
+          "type": "file",
+          "required": false,
+          "description": "可选的未标记原图。"
+        },
+        {
+          "name": "promptText",
+          "type": "string",
+          "required": true,
+          "description": "描述要在标记区域执行的编辑。"
+        }
+      ]
+    }
+  ],
+  "expertModes": [
+    {
+      "id": "designer",
+      "nameZh": "设计师",
+      "whenToUse": "生成亚马逊 A+ 内容模块设计图。",
+      "fields": [
+        {
+          "name": "productName",
+          "type": "string",
+          "required": false,
+          "default": "产品",
+          "description": "商品名称，用于提示词中的商品称呼。",
+          "example": "便携式咖啡机"
+        }
+      ]
+    },
+    {
+      "id": "productShowcase",
+      "nameZh": "商品展示",
+      "whenToUse": "需要生活方式场景展示图，且不出现全身人物。",
+      "notes": "可出现半身或身体的部分。",
+      "fields": [
+        {
+          "name": "productName",
+          "type": "string",
+          "required": false,
+          "default": "产品",
+          "description": "商品名称，用于提示词中的商品称呼。",
+          "example": "便携式咖啡机"
+        },
+        {
+          "name": "sceneTone",
+          "type": "string",
+          "required": false,
+          "default": "自动识别",
+          "description": "希望场景传达的氛围。"
+        }
+      ]
+    },
+    {
+      "id": "productInfographic",
+      "nameZh": "商品信息图",
+      "whenToUse": "需要通过可视化设计展示商品信息，画面不出现人物。",
+      "fields": [
+        {
+          "name": "productName",
+          "type": "string",
+          "required": false,
+          "default": "产品",
+          "description": "商品名称，用于提示词中的商品称呼。",
+          "example": "便携式咖啡机"
+        },
+        {
+          "name": "infographicTone",
+          "type": "string",
+          "required": false,
+          "default": "清晰、专业、现代",
+          "description": "信息图的整体表达风格。"
+        },
+        {
+          "name": "textOverlay",
+          "type": "string",
+          "required": false,
+          "description": "希望出现在图中的文字内容。"
+        },
+        {
+          "name": "keywords",
+          "type": "string[]",
+          "required": false,
+          "maxItems": 12,
+          "description": "要突出的关键词，最多采用 12 项。"
+        }
+      ]
+    },
+    {
+      "id": "productAdvertisement",
+      "nameZh": "商品广告",
+      "whenToUse": "需要带英文文案的商品广告图。",
+      "fields": [
+        {
+          "name": "productName",
+          "type": "string",
+          "required": false,
+          "default": "产品",
+          "description": "商品名称，用于提示词中的商品称呼。",
+          "example": "便携式咖啡机"
+        },
+        {
+          "name": "brandEssence",
+          "type": "string",
+          "required": false,
+          "default": "高级、精致、可信、创新",
+          "description": "品牌要传达的核心气质。"
+        },
+        {
+          "name": "targetAudience",
+          "type": "string",
+          "required": false,
+          "default": "根据商品图片与类目推断的高意向购买人群",
+          "description": "广告面向的人群。"
+        },
+        {
+          "name": "adGoal",
+          "type": "string",
+          "required": false,
+          "default": "激发购买欲并提升品牌信任",
+          "description": "广告要达成的目标。"
+        },
+        {
+          "name": "keySellingPoints",
+          "type": "string[]",
+          "required": false,
+          "maxItems": 12,
+          "description": "要展示的商品卖点，最多采用 12 项。"
+        }
+      ]
+    },
+    {
+      "id": "visualFeastCurator",
+      "nameZh": "视觉美陈策展",
+      "whenToUse": "需要无人物、聚焦商品美学陈列的商业图。",
+      "notes": "模板要求融入英文行动号召；当前 callToActionText 输入不会替换模板中的字面字段名。",
+      "fields": [
+        {
+          "name": "productDescription",
+          "aliases": [
+            "product_description"
+          ],
+          "type": "string",
+          "required": false,
+          "default": "高端商品美学陈列",
+          "description": "描述陈列主体；留空时可由 promptText 提供，二者都为空时使用默认描述。"
+        },
+        {
+          "name": "productImageStyle",
+          "aliases": [
+            "product_image_style"
+          ],
+          "type": "string",
+          "required": false,
+          "default": "高分辨率商品图",
+          "description": "商品图的呈现方式。"
+        },
+        {
+          "name": "aestheticStyle",
+          "aliases": [
+            "aesthetic_style"
+          ],
+          "type": "string",
+          "required": false,
+          "default": "极简主义艺术装置",
+          "description": "陈列采用的美学风格。"
+        },
+        {
+          "name": "colorPalette",
+          "aliases": [
+            "color_palette"
+          ],
+          "type": "string",
+          "required": false,
+          "default": "与商品主色调和谐的对比色系",
+          "description": "陈列使用的色彩搭配。"
+        },
+        {
+          "name": "lighting",
+          "type": "string",
+          "required": false,
+          "default": "博物馆级聚光照明，强调材质和轮廓",
+          "description": "商品陈列的灯光效果。"
+        },
+        {
+          "name": "compositionStrategy",
+          "aliases": [
+            "composition_strategy"
+          ],
+          "type": "string",
+          "required": false,
+          "default": "黄金比例与对称/非对称几何构图",
+          "description": "商品与辅助元素的构图方式。"
+        },
+        {
+          "name": "backgroundElements",
+          "aliases": [
+            "background_elements"
+          ],
+          "type": "string",
+          "required": false,
+          "default": "抽象几何形状、渐变光影、高级纹理材质",
+          "description": "陈列采用的背景元素。"
+        },
+        {
+          "name": "textIntegrationStyle",
+          "aliases": [
+            "text_integration_style"
+          ],
+          "type": "string",
+          "required": false,
+          "default": "融入构图的艺术字体，与视觉元素和谐统一",
+          "description": "模板所要求的英文文案与画面的融合方式。"
+        },
+        {
+          "name": "callToActionText",
+          "aliases": [
+            "call_to_action_text"
+          ],
+          "type": "string",
+          "required": false,
+          "effective": false,
+          "description": "模板当前不替换此输入，传入后不会影响生成提示词。"
+        }
+      ]
+    },
+    {
+      "id": "socialStoryCurator",
+      "nameZh": "社交故事策展",
+      "whenToUse": "需要适合社交媒体分享的生活随拍风格图片和配套文案。",
+      "fields": [
+        {
+          "name": "productImageDescription",
+          "aliases": [
+            "product_image_description"
+          ],
+          "type": "string",
+          "required": false,
+          "description": "商品图的外观与功能描述；留空时由商品名与上传图片生成默认描述。"
+        },
+        {
+          "name": "userIntent",
+          "aliases": [
+            "user_intent"
+          ],
+          "type": "string",
+          "required": false,
+          "description": "希望通过分享表达的意图；留空时使用 promptText 或内置方向。"
+        },
+        {
+          "name": "productName",
+          "type": "string",
+          "required": false,
+          "default": "产品",
+          "description": "商品名称，用于提示词中的商品称呼。",
+          "example": "便携式咖啡机",
+          "aliases": [
+            "product_name"
+          ]
+        },
+        {
+          "name": "sceneDescription",
+          "aliases": [
+            "scene_description"
+          ],
+          "type": "string",
+          "required": false,
+          "default": "日常生活场景",
+          "description": "商品出现的日常场景。"
+        },
+        {
+          "name": "targetAudienceKeywords",
+          "aliases": [
+            "target_audience_keywords"
+          ],
+          "type": "string",
+          "required": false,
+          "default": "根据商品定位智能判断",
+          "description": "目标受众及其关注点。"
+        },
+        {
+          "name": "toneOfVoice",
+          "aliases": [
+            "tone_of_voice"
+          ],
+          "type": "string",
+          "required": false,
+          "default": "轻松, 真实, 有趣",
+          "description": "社交文案的表达语气。"
+        },
+        {
+          "name": "includePerson",
+          "aliases": [
+            "include_person"
+          ],
+          "type": "boolean",
+          "required": false,
+          "default": true,
+          "description": "是否在场景中融入人物；无效布尔文本按 true 处理。"
+        },
+        {
+          "name": "callToAction",
+          "aliases": [
+            "call_to_action"
+          ],
+          "type": "string",
+          "required": false,
+          "description": "可选的行动号召文案。"
+        }
+      ]
+    },
+    {
+      "id": "none",
+      "nameZh": "通用",
+      "whenToUse": "使用通用商品场景提示词，不选择专家模式。",
+      "fields": []
+    }
+  ]
+}
