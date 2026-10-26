@@ -4,7 +4,7 @@
 
 ## 安装
 
-优先用 `skills` CLI 安装。CLI 要求 Node.js 22.20 或更新版本，并需要网络下载 CLI 与 Skill。发布仓库为私有 GitHub 仓库，使用者需有访问权限：
+优先用 `skills` CLI 安装。CLI 要求 Node.js 22.20 或更新版本，并需要网络下载 CLI 与 Skill。发布仓库为公开 GitHub 仓库：
 
 ```sh
 npx skills add leodknuth/listing-image-skill --skill listing-image -a claude-code

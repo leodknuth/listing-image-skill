@@ -1,6 +1,6 @@
 # Install Listing Image Skill
 
-The following commands use the private GitHub repository `leodknuth/listing-image-skill`; your account must have access.
+The following commands install the Skill from the public GitHub repository `leodknuth/listing-image-skill`.
 
 ## Claude Code
 
